@@ -40,7 +40,7 @@ class MainWindow(QWidget):
         self.btn2.clicked.connect(self.cancelar)
         
     def registrar(self):
-        button = self.sender()
+        #button = self.sender()
         QMessageBox.information(self, "Exito", 
         f'Usuario creado exitosamente',
         QMessageBox.StandardButton.Ok,
