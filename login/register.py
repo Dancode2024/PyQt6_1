@@ -86,15 +86,7 @@ class RegistrationForm(QWidget):
             except Exception as e:
                     print(f"Error al escribir en el archivo: {e}") 
                     
-            """except FileNotFoundError as e:
-                QMessageBox.warning(self, 'Error',f'LA bd no existe: ',
-                                QMessageBox.StandardButton.Close, 
-                                QMessageBox.StandardButton.Close)"""
-                                
-                               
-                
-                
-    
+   
     def cancel_user(self):
         self.close()
        
