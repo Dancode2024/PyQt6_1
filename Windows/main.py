@@ -1,9 +1,9 @@
 import sys
 
 from PyQt6.QtWidgets import (QApplication, QVBoxLayout,QWidget,
-                            QMainWindow, QStatusBar,QFileDialog,QTextEdit,QFontDialog)
+                            QMainWindow, QStatusBar,QFileDialog,QTextEdit,QFontDialog, QColorDialog)
 from PyQt6.QtCore import QStandardPaths
-from PyQt6.QtGui import  QPixmap, QAction, QKeySequence,QIcon
+from PyQt6.QtGui import  QPixmap, QAction, QKeySequence,QIcon, QTextCharFormat
 
 import os
 
@@ -35,8 +35,11 @@ class MainWindow(QMainWindow):
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
-    
+       
     def create_action(self):
+        
+        #Menus Basicos
+        
         self.open_window = QAction("Abrir", self)
         self.open_window.setShortcut(QKeySequence("Ctrl+o"))
         self.open_window.setStatusTip("Abrir Archivos")
@@ -52,10 +55,17 @@ class MainWindow(QMainWindow):
         self.export_window.setStatusTip("Exportar Archivos")
         self.export_window.triggered.connect(self.export_main_window)
         
+        #Menus de Editar
+        
         self.font_window = QAction("Fuente", self)
         self.font_window.setShortcut(QKeySequence("Ctrl+f"))
         self.font_window.setStatusTip("Cambiar Fuentes")
         self.font_window.triggered.connect(self.font_main_window)
+        
+        self.color_window = QAction("Color", self)
+        self.color_window.setShortcut(QKeySequence("Ctrl+K"))
+        self.color_window.setStatusTip("Cambiar color")
+        self.color_window.triggered.connect(self.color_main_window)
         
         self.undo_window = QAction("Deshacer", self)
         self.undo_window.setShortcut(QKeySequence("Ctrl+Z"))
@@ -74,11 +84,14 @@ class MainWindow(QMainWindow):
         menu_archive.addAction(self.export_window)
         
         menu_edit = self.menuBar().addMenu("Editar")
+        menu_edit.addAction(self.font_window)
+        menu_edit.addAction(self.color_window)
         menu_edit.addAction(self.undo_window)
         menu_edit.addAction(self.redo_window)
-        menu_edit.addAction(self.font_window)
         
         
+        
+    
     def open_main_window(self):
         options = (QFileDialog.Option.DontUseNativeDialog)
         initial_value = QStandardPaths.writableLocation(
@@ -125,7 +138,7 @@ class MainWindow(QMainWindow):
     def font_main_window(self):
         selected_text_cursor = self.editor_text.textCursor()
         
-        font , ok =QFontDialog.getFont(
+        font , ok = QFontDialog.getFont(
             self.editor_text.currentFont(), self
         )
         
@@ -137,6 +150,23 @@ class MainWindow(QMainWindow):
                 
             else: 
                 self.editor_text.setCurrentFont(font)
+                
+    def color_main_window(self):
+        selected_text_cursor = self.editor_text.textCursor()
+        
+        color = QColorDialog.getColor(
+            self.editor_text.textColor(), self
+        )
+        
+        if color.isValid():
+            if selected_text_cursor.hasSelection():
+                format = QTextCharFormat()
+                format = self.editor_text.currentCharFormat()
+                format.setForeground(color)
+                selected_text_cursor.mergeCharFormat(format)
+                
+            else: 
+                self.editor_text.setTextColor(color)
                 
     
     def export_main_window(self):
